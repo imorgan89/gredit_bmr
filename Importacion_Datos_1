@@ -40,10 +40,11 @@ client = ODBC.connect 'SYBASETESTING'
 columns = %w(fecproc sistcod succod moncod tipopercod descripcion cuecod sdodisponible intdevadeu intdevacre fecultmov estctacod cueestdesc prodcod prodnom tipbloqcod)
 
 query = <<-SQL 
-	SELECT #{columns.join ','} FROM inventario_CA
-	WHERE fecproc = 'Nov  7 2018 12:00:00:000AM';#esto lo deberiamos pasar a una variable que tenga el mismo formato que el campo
+	SELECT #{columns.join ','} FROM inventario_CA;
+SQL
+	#WHERE fecproc = 'Nov  7 2018 12:00:00:000AM';esto lo deberiamos pasar a una variable que tenga el mismo formato que el campo
 
-class inventario_CA < ActiveRecord::Base
+class Inventario_CAS < ActiveRecord::Base
   self.table_name = 'inventario_CA'
 end
 
@@ -52,7 +53,7 @@ stat = inventario_CA.prepare query
 stat.execute
 
 while row = stat.fetch
-	inventario_CA.create(Hash[columns.zip row])
+	Inventario_CAS.create(Hash[columns.zip row])
 end  
   
 #Se corta la conexion
