@@ -7,7 +7,8 @@ require 'odbc_utf8'
 
 @@ar_connection['monitor_data']
 
-#Se crea la tabla en Postgre que se va a importar de Sybase (se asumen que la definicion)
+#Se crea la tabla en Postgre que se va a importar de Sybase (se asumen que la definicion del tipo de dato es igual en SQLServer que en Postgre)
+#A confirmar con el manual tecnico que nos tienen que pasar
 
 crear = "CREATE TABLE inventario_CA 
    (
@@ -28,6 +29,7 @@ crear = "CREATE TABLE inventario_CA
    prodnom   varchar(150)  null,
    tipbloqcod   smallint  null
 	)"
+
 ActiveRecord::Base.connection.exec_query(crear)
 
 #Nos conectamos a la base de datos de Sybase
@@ -35,13 +37,11 @@ ActiveRecord::Base.connection.exec_query(crear)
 client = ODBC.connect 'SYBASETESTING'
 
 #Levantamos la tabla inventario_CA de Sybase
-
 columns = %w(fecproc sistcod succod moncod tipopercod descripcion cuecod sdodisponible intdevadeu intdevacre fecultmov estctacod cueestdesc prodcod prodnom tipbloqcod)
 
 query = <<-SQL 
 	SELECT #{columns.join ','} FROM inventario_CA
 	WHERE fecproc = 'Nov  7 2018 12:00:00:000AM';#esto lo deberiamos pasar a una variable que tenga el mismo formato que el campo
-
 
 class inventario_CA < ActiveRecord::Base
   self.table_name = 'inventario_CA'
@@ -55,7 +55,6 @@ while row = stat.fetch
 	inventario_CA.create(Hash[columns.zip row])
 end  
   
-stat.drop  
-  
-  
+#Se corta la conexion
 
+stat.drop  
