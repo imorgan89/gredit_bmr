@@ -48,7 +48,7 @@ class Inventario_CAS < ActiveRecord::Base
   self.table_name = 'inventario_CA'
 end
 
-stat = inventario_CA.prepare query
+stat = client.prepare query
 
 stat.execute
 
